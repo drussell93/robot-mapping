@@ -15,26 +15,41 @@ class RangeFinder:
 
     def __init__(self,rangefinder_reading, log_odds, x, y):
 
-        self.cone_width = 5 # Radians
+        # alpha = width of rangefinder's cone in radians
+        self.cone_width = .785 # Radians
+
+        # beta = width of the region before and after the measured distance to be considered occupied
         self.obstacle_width = 5 # cm 
+        
+        #self.new_log_odds = np.zeros((128,128))
         self.new_log_odds = log_odds
+
+        # x and y of sonar's center in map frame
         self.x = x
         self.y = y
         
 
-    def update(self, rangefinder_reading, log_odds, x, y):
+    def update(self, rangefinder_reading, log_odds, x, y):  # Function called from mapping.py in draw()      
         #print(rangefinder_reading)
-        #print("Log odds: ", log_odds)
+        #print(log_odds)
         
+        a = self.cone_width
+        b = self.obstacle_width
+        z = rangefinder_reading
+
         # Log odds calculation
         for i in range(0, 127):
             for j in range(0, 127):
+
                 r = math.sqrt( (x**2) + (y**2) )
                 theta = math.atan2(y,x)
-                if log_odds[i][j] == 0:
-                    return 0
-                else:
-                    self.new_log_odds[i][j] = np.log(log_odds[i][j] / (1. - log_odds[i][j])) 
-                    return self.new_log_odds
 
-        
+                if -b/2 <= theta <= b/2 and z - a/2 <= r <= z + a/2:  #log odds = occluded
+                    self.new_log_odds[i][j] = math.log(log_odds[i][j] / (1. - log_odds[i][j]))
+                    return self.new_log_odds[i][j]
+
+                elif -b/2 <= theta <= b/2 and 0 <= r < z - a/2:  #log odds = free
+                    return log_odds
+
+                else:  #log odds = L_0  
+                    return log_odds

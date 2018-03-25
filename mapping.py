@@ -60,7 +60,7 @@ class MyFrontEnd(FrontEnd):
     def update(self,time_delta):
         T_sonar_map = self.robot.get_robot_map_transform()*self.robot.get_sonar_robot_transform()
         
-        # Get sonar x and y 
+        # Get sonar x and y for center point of sonar in map frame. 
         #print(T_sonar_map)
         #print(T_sonar_map.item(2))
         #print(T_sonar_map.item(5))
@@ -72,10 +72,11 @@ class MyFrontEnd(FrontEnd):
             self.robot.sonar_distance = self.omap.get_first_hit(T_sonar_map)
             
             # Send range finder measurement to RangeFinder class
-            print(self.robot.sonar_distance)
-            rangefinder = RangeFinder(self.robot.sonar_distance,self.omap.log_odds,x,y)
-            log_odds = rangefinder.update(self.robot.sonar_distance, self.omap.log_odds,x,y)
-            #self.omap.log_odds = log_odds
+            #print(self.robot.sonar_distance)
+            #print(self.omap.log_odds)
+            rangefinder = RangeFinder(self.robot.sonar_distance, self.omap.log_odds, x, y)
+            log_odds = rangefinder.update(self.robot.sonar_distance, self.omap.log_odds, x, y)
+            self.omap.log_odds = log_odds
             
 	else:
             # get current rangefinder reading

@@ -13,28 +13,16 @@ class OccupancyGrid:
     Probability for each cell P(m) = 1 - 1 / ( 1 + e^(LogOdds(m)) )
     """
 
-    """
-    Maintains an obstacle map.
-    
-    The map contains binary values: 0 (free) or 1 (occupied).
-    
-    The map is stored as a matrix with shape (height,width).
-    
-    The map can be used to simulate rangefinder readings.
-    """
-
     def __init__(self,path,max_dist=80):
-        """ Creates an obstacle map.
-            Arguments:
-                path: path to a grayscale image representing the map
-                max_dist: maximum rangefinder reading (cm)
-        """
+
+        # Initialize log odds to 0
+        self.log_odds = np.zeros((128,128))  
+
         self.max_dist = max_dist
 
         # read map from image
         self.grid = imread(path,0).astype('float32')/255.
-        self.log_odds = np.zeros((128,128)) #self.grid
-
+      
         self.height = self.grid.shape[0]
         self.width = self.grid.shape[1]
         
@@ -45,8 +33,7 @@ class OccupancyGrid:
             for j in range(0, 127):
                 probability = 1 - ( 1 / ( 1 + np.exp(self.log_odds[i][j]) ) )
                 self.grid[i][j] = probability
-                #self.log_odds[i][j] = probability
-                #self.grid[i][j] = self.log_odds[i][j]
+                #print(probability) # Should be 0.5 to start (map is grey)
 
         """ Draws the obstacle map onto the surface. """
         # transpose grid and convert to 0-255 range
@@ -96,7 +83,6 @@ if __name__ == '__main__':
 
     # create a map
     grid = np.zeros((128,128))
-    log_odds = np.zeros((128,128)) 
 
     # border
     grid[:,0] = 1
