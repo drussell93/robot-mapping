@@ -56,7 +56,7 @@ class MyFrontEnd(FrontEnd):
 
         # draw robot
         self.robot.draw(surface)
-    
+      
     def update(self,time_delta):
         T_sonar_map = self.robot.get_robot_map_transform()*self.robot.get_sonar_robot_transform()
         
