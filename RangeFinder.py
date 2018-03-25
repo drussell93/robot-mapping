@@ -45,11 +45,15 @@ class RangeFinder:
                 theta = math.atan2(y,x)
 
                 if -b/2 <= theta <= b/2 and z - a/2 <= r <= z + a/2:  #log odds = occluded
-                    self.new_log_odds[i][j] = math.log(log_odds[i][j] / (1. - log_odds[i][j]))
-                    return self.new_log_odds[i][j]
+                    self.new_log_odds[i][j] = log_odds[i][j] + 5
+                    #return self.new_log_odds[i][j]
 
                 elif -b/2 <= theta <= b/2 and 0 <= r < z - a/2:  #log odds = free
-                    return log_odds
+                    self.new_log_odds[i][j] = log_odds[i][j] - 5
+                    #return log_odds
 
-                else:  #log odds = L_0  
-                    return log_odds
+                #else:  #log odds = L_0  not needed 
+                    #return log_odds
+
+
+        return self.new_log_odds
